@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Inspection facts - WatchDoc open-source toolkit{% endblock %}
+{% block content %}
+  <p><a href="{{ url_for('index') }}">Inspect another file</a></p>
+  <h1>Inspection facts</h1>
+
+  <section id="document-preview" data-kind="{{ facts.file.kind }}" data-media-type="{{ facts.file.media_type }}">
+    <h2>Preview</h2>
+    <textarea id="preview-bytes" hidden readonly>{{ preview_b64 }}</textarea>
+    <canvas id="preview-canvas" hidden></canvas>
+    <img id="preview-image" alt="Uploaded image" hidden />
+    <p id="preview-fallback" hidden>Preview is not available for this file.</p>
+  </section>
+
+  <div class="layout">
+    <section>
+      {% for group in groups %}
+        <article>
+          <h2>{{ group.heading }}</h2>
+          <p class="slot">{{ group.slot }}</p>
+          <table>
+            <tbody>
+              {% for key, value in group.rows %}
+                <tr>
+                  <th scope="row">{{ key }}</th>
+                  <td>{{ value if value is not none else "-" }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </article>
+      {% endfor %}
+      <p>
+        <button type="button" id="download-json" data-filename="{{ facts.file.name or 'facts' }}.json">
+          Download JSON
+        </button>
+      </p>
+      <script type="application/json" id="facts-json">{{ facts_json | safe }}</script>
+    </section>
+
+    <aside>
+      {% if watchdoc_error %}
+        <p class="error" role="alert">{{ watchdoc_error }}</p>
+      {% endif %}
+
+      {% if watchdoc %}
+        <section class="watchdoc-column">
+          <h2>From WatchDoc API</h2>
+          {% if watchdoc.status == "processing" %}
+            <p>Analysis is still running on WatchDoc.</p>
+            <p>Check id: <code>{{ watchdoc.id }}</code></p>
+            <p><a class="cta" href="{{ product_url }}">Open in WatchDoc</a></p>
+          {% else %}
+            <table>
+              <tbody>
+                <tr><th scope="row">status</th><td>{{ watchdoc.status }}</td></tr>
+                <tr><th scope="row">decision</th><td>{{ watchdoc.decision }}</td></tr>
+                <tr><th scope="row">risk_level</th><td>{{ watchdoc.risk_level }}</td></tr>
+                <tr><th scope="row">summary</th><td>{{ watchdoc.summary }}</td></tr>
+                <tr>
+                  <th scope="row">flags</th>
+                  <td>
+                    {% if watchdoc.flags %}
+                      {{ watchdoc.flags | map(attribute="title") | join(", ") }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          {% endif %}
+        </section>
+      {% else %}
+        <section class="locked-cards">
+          <h2>On WatchDoc</h2>
+          {% for title in locked_titles %}
+            <article class="locked">
+              <h3>{{ title }}</h3>
+              <p>{{ locked_copy }}</p>
+            </article>
+          {% endfor %}
+          <p>
+            <a class="cta" href="{{ product_url }}">Analyze on WatchDoc</a>
+          </p>
+        </section>
+      {% endif %}
+    </aside>
+  </div>
+  <script src="{{ url_for('static', filename='preview.js') }}"></script>
+{% endblock %}

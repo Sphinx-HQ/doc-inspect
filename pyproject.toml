@@ -1,0 +1,93 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "watchdoc"
+dynamic = ["version"]
+description = "WatchDoc open-source toolkit: reads what a document says about itself. Facts, not verdicts."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [
+    { name = "Sphinx", email = "hello@sphinxhq.com" },
+]
+keywords = ["pdf", "exif", "metadata", "document", "inspect"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: File Formats",
+]
+dependencies = [
+    "pymupdf>=1.24",
+    "Pillow>=10.0",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+demo = [
+    "flask>=3.0",
+]
+dev = [
+    "flask>=3.0",
+    "pytest>=8.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "types-Pillow>=10.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Sphinx-HQ/doc-inspect"
+Documentation = "https://watchdoc.sphinxhq.com/api/docs/?utm_source=oss&utm_medium=pypi&utm_campaign=watchdoc-python"
+Product = "https://watchdoc.sphinxhq.com/?utm_source=oss&utm_medium=pypi&utm_campaign=watchdoc-python"
+
+[tool.hatch.version]
+path = "src/watchdoc/_version.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/demo",
+    "/samples",
+    "/docs",
+    "/tests",
+    "/LICENSE",
+    "/README.md",
+    "/ROADMAP.md",
+    "/CONTRIBUTING.md",
+    "/SECURITY.md",
+    "/CHANGELOG.md",
+    "/Makefile",
+    "/pyproject.toml",
+]
+
+[tool.ruff]
+target-version = "py310"
+src = ["src", "tests", "demo", "samples"]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "W"]
+
+[tool.mypy]
+python_version = "3.10"
+packages = ["watchdoc"]
+mypy_path = "src"
+warn_unused_ignores = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+module = ["pymupdf"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "src"]
+addopts = "-q"

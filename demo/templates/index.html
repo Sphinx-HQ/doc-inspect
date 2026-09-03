@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Inspect a document - WatchDoc open-source toolkit{% endblock %}
+{% block content %}
+  <h1>Inspect a document</h1>
+  <p>
+    Reads PDF Info, XMP, and image EXIF locally. It does not decide whether a
+    document is genuine.
+  </p>
+  {% if error %}
+    <p class="error" role="alert">{{ error }}</p>
+  {% endif %}
+  <form action="{{ url_for('inspect_form') }}" method="post" enctype="multipart/form-data">
+    <label>
+      File
+      <input type="file" name="file" accept=".pdf,image/*" required />
+    </label>
+    {% if api_configured %}
+      <label>
+        <input type="checkbox" name="also_check" />
+        Also analyze on WatchDoc
+      </label>
+    {% endif %}
+    <button type="submit">Inspect</button>
+  </form>
+{% endblock %}

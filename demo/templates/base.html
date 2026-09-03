@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}WatchDoc open-source toolkit{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <header>
+      <p class="brand">WatchDoc open-source toolkit</p>
+      <p class="badge" data-configured="{{ 'yes' if api_configured else 'no' }}">
+        WatchDoc API key: {{ "configured" if api_configured else "not configured" }}
+      </p>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+    <footer>
+      <p>This toolkit reports facts. It does not decide whether a document is fraudulent.</p>
+      <p>
+        Production detection lives on
+        <a href="{{ product_url }}">WatchDoc</a>.
+      </p>
+    </footer>
+  </body>
+</html>
